@@ -14,7 +14,7 @@ File ini merupakan contoh pembuatan database CRUD di MySql dengan REST API melal
 
 ### Dev Modules
 1. [Nodemon]
-2. ESLint
+2. [ESLint]
 
 ---
 
@@ -24,7 +24,7 @@ File ini merupakan contoh pembuatan database CRUD di MySql dengan REST API melal
 [CORS]: https://www.npmjs.com/package/cors
 [Body Parser]: https://www.npmjs.com/package/body-parser
 [Nodemon]: https://www.npmjs.com/package/nodemon
-[ESLint]: 
+[ESLint]: https://eslint.org/docs/user-guide/getting-started
 
 
 
