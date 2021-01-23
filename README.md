@@ -4,6 +4,30 @@
 
 File ini merupakan contoh pembuatan database CRUD di MySql dengan REST API melalui tools Postman. Project ini disimulasikan dapat create, read, update, dan delete suatu product barang melalui perintah standar yang ada di Sql yang terintegrasi dengan REST API dan disimulasikan melalui postman.
 
+### Modules
+
+1. [Expressjs]
+2. [MySql2]
+3. [Dotenv]
+4. [CORS]
+5. [Body Parser]
+
+### Dev Modules
+1. [Nodemon]
+2. ESLint
+
+---
+
+[Expressjs]: https://www.npmjs.com/package/express
+[MySql2]: https://www.npmjs.com/package/mysql2
+[Dotenv]: https://www.npmjs.com/package/dotenv
+[CORS]: https://www.npmjs.com/package/cors
+[Body Parser]: https://www.npmjs.com/package/body-parser
+[Nodemon]: https://www.npmjs.com/package/nodemon
+[ESLint]: 
+
+
+
 ### Tatacara
 
 1. Silahkan download file ini.
@@ -30,6 +54,6 @@ CTRL + SHIFT + C
 ```
 Kemudian ketikan text berikut
 ```
-"npm run start"
+"npm run start" //unutk menjalankan nodemon cek di file package.json
 ```
 guna untuk menjalankan project ini. Pastikan anda telah mengaktifkan XAMPP
