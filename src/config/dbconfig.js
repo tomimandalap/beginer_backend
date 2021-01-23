@@ -1,10 +1,12 @@
 const mysql = require('mysql2')
 
+const {envDBHOST, envDBUSER, envDBPASS, envDB} = require('../helpers/nv')
+
 const conn = mysql.createConnection ({
-  host: process.env.DBHOST,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DB
+  host: envDBHOST,
+  user: envDBUSER,
+  password: envDBPASS,
+  database: envDB
 })
 
 module.exports = conn

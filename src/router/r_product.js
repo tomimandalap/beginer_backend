@@ -11,11 +11,11 @@ const {
 } = require('../controllers/c_product')
 
 route
-.post('/product', creatProduct)
-.get('/product', readAllProduct)
-.get('/product/:id', detailProduct)
-.put('/product/:id', updateProduct)
-.patch('/product/:id', patchProduct)
-.delete('/product/:id', deleteProduct)
+  .post('/product', creatProduct)
+  .get('/product', readAllProduct)
+  .get('/product/:id', detailProduct)
+  .put('/product/:id', updateProduct)
+  .patch('/product/:id', patchProduct)
+  .delete('/product/:id', deleteProduct)
 
 module.exports = route

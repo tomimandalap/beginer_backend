@@ -5,7 +5,7 @@ module.exports = {
   modelCreatCategory: (data) => {
     return new Promise ((resolve, reject) => {
       conn.query(`INSERT INTO tb_category 
-      VALUES ('${data.code}','${data.category}','${data.description}')`
+      VALUES ('${data.category}','${data.description}')`
       , (error, result) => {
         if(!error) {
           resolve(result)
@@ -17,9 +17,23 @@ module.exports = {
   },
 
   // Read all field table product
-  modelReadCategory: () => {
+  modelReadCategory: (search, sorted, pages) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`SELECT * FROM tb_category`
+      conn.query(`SELECT * FROM tb_category ${search} ${sorted} ${pages}`
+      , (error, result) => {
+        if(!error) {
+          resolve(result)
+        } else {
+          reject(new Error(error))
+        }
+      })
+    })
+  },
+
+  // count total row table category
+  modelReadTotalCategory: (search) => {
+    return new Promise ((resolve, reject) => {
+      conn.query(`SELECT COUNT (*) as total FROM tb_category ${search}`
       , (error, result) => {
         if(!error) {
           resolve(result)
@@ -31,9 +45,9 @@ module.exports = {
   },
 
   // Read detail category 
-  modelDetailCategory: (code) => {
+  modelDetailCategory: (category) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`SELECT * FROM tb_category WHERE code='${code}'`
+      conn.query(`SELECT * FROM tb_category WHERE category LIKE '%${category}%'`
       , (error, result) => {
         if(!error) {
           resolve(result)
@@ -45,10 +59,10 @@ module.exports = {
   },
 
   // Update data category
-  modelUpdateCategory: (data, code) => {
+  modelUpdateCategory: (data, category) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`UPDATE tb_category SET category='${data.category}', description='${data.description}' 
-      WHERE code='${code}'`
+      conn.query(`UPDATE tb_category SET description='${data.description}' 
+      WHERE category='${category}'`
       , (error, result) => {
         if(!error) {
           resolve(result)
@@ -60,9 +74,9 @@ module.exports = {
   },
 
   // Patch update data category
-  modelPatchCategory: (data, code) => {
+  modelPatchCategory: (data, category) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`UPDATE tb_category SET ? WHERE code = ?`,[data, code], (error, result) => {
+      conn.query(`UPDATE tb_category SET ? WHERE category = ?`,[data, category], (error, result) => {
         if(!error) {
           resolve(result)
         } else {
@@ -73,9 +87,9 @@ module.exports = {
   },
 
   // Delete
-  modelDeleteCategory: (code) => {
+  modelDeleteCategory: (category) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`DELETE FROM tb_category WHERE code='${code}'`, (error, result) => {
+      conn.query(`DELETE FROM tb_category WHERE category='${category}'`, (error, result) => {
         if(!error) {
           resolve(result)
         } else {

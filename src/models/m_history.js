@@ -17,9 +17,21 @@ module.exports = {
   },
 
   // Read 
-  modelReadHistory: (data, pages) => {
+  modelReadHistory: (search, data, pages) => {
     return new Promise ((resolve, reject) => {
-      conn.query(`SELECT * FROM tb_history ${data} ${pages}`, (error, result) => {
+      conn.query(`SELECT * FROM tb_history ${search} ${data} ${pages}`, (error, result) => {
+        if(!error) {
+          resolve(result)
+        } else {
+          reject (new Error(error))
+        }
+      })
+    })
+  },
+
+  modelReadTotalHistory: (search) => {
+    return new Promise ((resolve, reject) => {
+      conn.query(`SELECT COUNT (*) as total FROM tb_history ${search}`, (error, result) => {
         if(!error) {
           resolve(result)
         } else {
@@ -45,8 +57,8 @@ module.exports = {
   modelUpdateHistory: (data, id) => {
     return new Promise ((resolve, reject) => {
       conn.query(`UPDATE tb_history
-      SET invoices='${data.invoices}', cashier='${data.cashier}', cart='${data.cart}', amount='${data.amount}' 
-      WHERE id='${id}'`
+      SET invoices='${data.invoices}', cashier='${data.cashier}', cart='${data.cart}'
+      , amount='${data.amount}' WHERE id='${id}'`
       , (error, result) => {
         if(!error) {
           resolve(result)

@@ -1,126 +1,189 @@
+const {modelCreateHistory} = require('../models/m_history')
+
 const {
-  modelCreateCart,
-  modelReadCart,
+  modelCreateCart, 
+  modelReadCart, 
+  modelReadTotalCart,
   modelDetailCart,
-  modelUpdatecart,
-  modelPatchCart,
-  modelDeleteCart
+  modelUpdateCart,
+  modelDeleteIdCart,
+  modelDeleteInvoicesCart
 } = require('../models/m_cart')
 
+const {success, created, badreques, notfound, failed} = require('../helpers/response')
+
 module.exports = {
-
-  // Creat data to tb_cart
+  // create data to cart
   createCart: (req, res) => {
-    const data = req.body
+    // data body 
+    const data = req.body 
 
-    for(let i=0; i<data.length; i++) {
-      readData(data[i])
+    // new data
+    const newDATA = []
+    data.forEach((element) => {
+      newDATA.push({
+        invoices: element.invoices,
+        cashier: element.cashier,
+        item: element.item,
+        qty: element.qty,
+        price: element.price,
+        subtotal: element.subtotal
+      })
+    })
+
+    // console.log(newDATA)
+    // check validasi data
+    let checkdata = false
+
+    for (let i=0; i < newDATA.length; i++) {
+      // console.log(newDATA[i])
+      if (!newDATA[i].invoices || !newDATA[i].cashier || !newDATA[i].item || !newDATA[i].qty || !newDATA[i].price || !newDATA[i].subtotal) {
+        checkdata = false
+        break
+      } else {
+        checkdata = true
+      }
     }
 
-    function readData(element) {
-
-      const subtotal = element.incart * element.price
-      
-      modelCreateCart(element, subtotal)
-      .then((response) => {
-        res.json({
-          message: "Create data cart success"
+    if (checkdata) {
+      // console.log('data check status true')
+      // message error
+      let messageError = ''
+      for (let j=0; j < newDATA.length; j++) {
+        modelCreateCart(newDATA[j])
+        .then((response)=> {
+          messageError = ''
         })
+        .catch((error) => {
+          messageError = error
+        })
+      }
+
+      if (messageError) {
+        failed(res, messageError, [])
+      } else {
+        created(res, 'Create data cart success', [])
+      }
+    } else {
+      // console.log('data check status false')
+      badreques(res, 'Bad request!', [])
+    }
+  },
+
+  // read all data
+  readCart: async(req, res) => {
+    try {
+      // searcing name
+      const invoices = req.query.invoices 
+      const search = invoices ? `WHERE invoices LIKE '%${invoices}%'` : ``
+
+      // order && metode (ASC, DESC)
+      const order = req.query.order ? req.query.order : ``
+      const metode = req.query.metode ? req.query.metode : 'asc'
+      const data = order ? `ORDER BY ${order} ${metode}` : ``
+
+      // pagination
+      const page = req.query.page ? req.query.page : 1
+      const limit = req.query.limit ? req.query.limit : 4
+      const start = page===1 ? 0 : (page-1)*limit
+      const pages = page ? `LIMIT ${start}, ${limit}` : ``
+
+      // const find = req.query.find
+
+      // total page
+      const totalPage = await modelReadTotalCart(search)
+      
+      modelReadCart(search, data, pages)
+      .then((response) => {
+        if (response.length > 0) {
+          const dataArr = []
+          response.forEach((e) => {
+            dataArr.push({
+              id: e.id,
+              date: e.date,
+              invoices: e.invoices,
+              cashier: e.cashier,
+              item: e.item,
+              qty: e.qty,
+              price: e.price,
+              subtotal: e.subtotal
+            })
+          })
+
+          const pagination = {
+            page: page,
+            limit: limit,
+            total: totalPage[0].total,
+            totalPage: Math.ceil(totalPage[0].total/limit)
+          }
+          success(res, 'Get all data cart success', pagination, dataArr)
+        } else {
+          notfound(res, "Oops, data not found!", [])
+        }     
       })
       .catch((error) => {
         console.log(error.message)
-        res.status(500).send({
-          message: error.message || "Some error occurred while creating the post"
-        })
+        failed(res, 'Internal server error!', error.message)
       })
-    }
-
-  },
-
-  // READ
-  readCart: (req, res) => {
-    modelReadCart()
-    .then((response) => {
-      res.json(response)
-    })
-    .catch((error) => {
+    } catch (error) {
       console.log(error.message)
-      res.status(500).send({
-        message: error.message || "Some error occurred while creating the get"
-      })
-    })
+      failed(res, 'Internal server error!', [])
+    }
   },
 
   detailCart: (req, res) => {
     const id = req.params.id
     modelDetailCart(id)
-    .then((response) => {
-      res.json(response)
+    .then((response)=>{
+      if (response.length > 0) {
+        // res.json(response)
+        success(res, 'Get detail cart id: '+id+' success', {}, response)
+      } else {
+        notfound(res, "Oops, id not found!", [])
+      }
     })
     .catch((error) => {
       console.log(error.message)
-      res.status(500).send({
-        message: error.message || "Some error occurred while creating the get"
-      })
+      failed(res, 'Internal server error!', error.message)
     })
   },
 
-  // UPDATE
+  // Update
   updateCart: (req, res) => {
     const id = req.params.id
     const data = req.body
-    modelUpdatecart(data, id)
-    .then((response) => {
-      res.json({
-        message: "Update data success"
-      })
+    modelUpdateCart(data, id)
+    .then((response)=>{
+      success(res, 'Update data cart id: '+id+' success', {}, data)
     })
     .catch((error) => {
       console.log(error.message)
-      res.status(500).send({
-        message: error.message || "Some error occurred while creating the put"
-      })
+      failed(res, 'Internal server error!', error.message)
     })
   },
 
-  patchCart: (req, res) => {
-    const id = req.params.id
-    const data = req.body
-    modelPatchCart(data, id)
+  // delete
+  // deleteIdCart: (req, res) => {
+  //   const id = req.params.id
+  //   modelDeleteIdCart(id)
+  //   .then((response) => {
+  //     success(res, 'Delete cart success id: '+id+' success', {}, [])
+  //   })
+  //   .catch((error) => {
+  //     console.log(error.message)
+  //     failed(res, 'Internal server error!', error.message)
+  //   })
+  // },
+
+  deleteInvoicesCart: (req, res) => {
+    const invoices = req.params.invoices
+    modelDeleteInvoicesCart(invoices)
     .then((response) => {
-      res.json({
-        message: "Patch update data success"
-      })
+      success(res, 'Delete cart success invoices: '+invoices+' success', {}, [])
     })
     .catch((error) => {
       console.log(error.message)
-      res.status(500).send({
-        message: error.message || "Some error occurred while creating the patch"
-      })
-    })
-  },
-
-  // DELETE
-  deleteCart: (req, res) => {
-    const id = req.query.id
-    const row = id ? `WHERE id='${id}'` : ``
-
-    const code = req.query.code
-    const receipt = code ? `WHERE receipt='${code}'` : ``
-
-    modelDeleteCart(row, receipt)
-    .then((response) => {
-      res.json({
-        message: "Delete data success"
-      })
-    })
-    .catch((error) => {
-      console.log(error.message)
-      res.status(500).send({
-        message: error.message || "Some error occurred while creating delete"
-      })
+      failed(res, 'Internal server error!', error.message)
     })
   }
-
-
 }

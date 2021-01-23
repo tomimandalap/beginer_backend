@@ -13,8 +13,8 @@ const {
 route
   .post('/category', creatCategory)
   .get('/category', readAllCategory)
-  .get('/category/:code', detailCategory)
-  .put('/category/:code', updateCategory)
-  .patch('/category/:code', patchCategory)
-  .delete('/category/:code', deleteCategory)
+  .get('/category/:category', detailCategory)
+  .put('/category/:category', updateCategory)
+  .patch('/category/:category', patchCategory)
+  .delete('/category/:category', deleteCategory)
 module.exports = route

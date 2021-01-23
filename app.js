@@ -1,7 +1,8 @@
-require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
+
+const {envPORT} = require('./src/helpers/nv')
 
 const routeProduct = require('./src/router/r_product')
 const routeCategory = require('./src/router/r_category')
@@ -10,29 +11,29 @@ const routeCart = require('./src/router/r_cart')
 const app = express()
 
 // client
-let whiteList = [
-  'http://localhost:5000'
-]
+// let whiteList = [
+//   'http://localhost:3030'
+// ]
 
-let corsOption = {
-  origin: function (origin, callback) {
-    if (whiteList.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-
-app.use(cors(corsOption))
+// let corsOption = {
+//   origin: function (origin, callback) {
+//     if (whiteList.indexOf(origin) !== -1 || !origin) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
+// }
 
 // parse request
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cors())
 
+// Set default
 app.get("/", (req, res) => {
   res.json({
-    message: "Welcom to Project Fast Food"
+    message: "Welcome to Project CRUD REST API"
   })
 })
 
@@ -43,7 +44,6 @@ app.use(routeCart)
 app.use(routeHistory)
 
 // server
-const PORT = process.env.PORT
-app.listen( PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`)
+app.listen( envPORT || 3000, cors(),  () => {
+  console.log(`Server is running on http://localhost:${envPORT || 3000}`)
 })
