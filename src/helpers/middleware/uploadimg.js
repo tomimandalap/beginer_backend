@@ -29,7 +29,7 @@ const multerUploadImg = multer({
 // make middleware
 const singleUploadimg = (req, res, next) => {
   // process upload
-  const multerSingle = multerUploadImg.single('img') // name file 
+  const multerSingle = multerUploadImg.single('image') // name file 
   multerSingle(req, res, (error) => {
     if(!error) {
       next()

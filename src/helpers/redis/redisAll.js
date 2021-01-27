@@ -1,6 +1,6 @@
 const client = require('../../config/redis/redis')
 const _ = require('lodash')
-const {success} = require('../response')
+const {success, notfound} = require('../response')
 
 module.exports = {
   // get all product
@@ -30,22 +30,24 @@ module.exports = {
             const filtered = _.filter(data, (item) => {
               return item.name.includes(name)
             })
-
-            const paginationData = _.slice(filtered, start, start+limit)
-            const pagination = {
-              page: page,
-              limit: limit,
-              total: data.length,
-              totalPage: Math.ceil(data.length/limit)
+            // logic cek data
+            if (filtered.length>0) {
+              const paginationData = _.slice(filtered, start, start+limit)
+              const pagination = {
+                page: page,
+                limit: limit,
+                total: data.length,
+                totalPage: Math.ceil(data.length/limit)
+              }
+              success(res,'Get all search product from redis success', pagination, paginationData)
+            } else {
+              notfound(res,'Oops, data not found!', [])
             }
-            success(res,'Get all search product from redis success', pagination, paginationData)
           } else if(order.length>0) {
             // sort by
             // const sorted = _.sortBy(data, order)
             const sorted = _.orderBy(data, order, metode)
-
             const paginationData = _.slice(sorted, start, start+limit)
-
             const pagination = {
               page: page,
               limit: limit,
@@ -102,15 +104,19 @@ module.exports = {
             const filtered = _.filter(data, (item) => {
               return item.category.includes(search)
             })
-
-            const paginationData = _.slice(filtered, start, start+limit)
-            const pagination = {
-              page: page,
-              limit: limit,
-              total: data.length,
-              totalPage: Math.ceil(data.length/limit)
+            // logic cek data
+            if (filtered.length>0) {
+              const paginationData = _.slice(filtered, start, start+limit)
+              const pagination = {
+                page: page,
+                limit: limit,
+                total: data.length,
+                totalPage: Math.ceil(data.length/limit)
+              }
+              success(res,'Get all search category from redis success', pagination, paginationData)
+            } else {
+              notfound(res,'Oops, data not found!', [])
             }
-            success(res,'Get all search category from redis success', pagination, paginationData)
           } else if (order.length>0) {
             // sort by
             // const sorted = _.sortBy(data, order)
@@ -169,18 +175,22 @@ module.exports = {
 
           if(search) {
             // search
-          const filtered = _.filter(data, (item) => {
-            return item.invoices.includes(search)
-          })
-
-          const paginationData = _.slice(filtered, start, start+limit)
-          const pagination = {
-            page: page,
-            limit: limit,
-            total: data.length,
-            totalPage: Math.ceil(data.length/limit)
-          }
-          success(res,'Get all search history from redis success', pagination, paginationData)
+            const filtered = _.filter(data, (item) => {
+              return item.invoices.includes(search)
+            })
+            // logic cek data
+            if (filtered.length>0) {
+              const paginationData = _.slice(filtered, start, start+limit)
+              const pagination = {
+                page: page,
+                limit: limit,
+                total: data.length,
+                totalPage: Math.ceil(data.length/limit)
+              }
+              success(res,'Get all search history from redis success', pagination, paginationData)
+            } else {
+              notfound(res,'Oops, data not found!', [])
+            }
           } else if(order) {
             // sort by
             // const sorted = _.sortBy(data, order)
