@@ -108,7 +108,6 @@ module.exports = {
     modelDetailHistory(id)
     .then((response) => {
       if(response.length > 0 ) {
-        module.exports.setDataRedis()
         success(res, 'Get detail data history id: '+id+' success', {}, response)
       } else {
         notfound(res, 'Oops, data not found!', [])

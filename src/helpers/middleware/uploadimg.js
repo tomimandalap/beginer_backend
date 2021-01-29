@@ -7,7 +7,7 @@ const multerStorage = multer.diskStorage({
     callback(null, `./public/img`)
   },
   filename: (req, file, callback) => {
-    callback(null, `${Date.now()}${path.extname(file.originalname)}`) // exm originalname => img.png/img.jpg
+    callback(null, `${Date.now()}${path.extname(file.originalname)}`) // ext originalname => img.png/img.jpg
   }
 })
 
@@ -21,7 +21,7 @@ const multerUploadImg = multer({
     if(typeExt === '.jpg' || typeExt === '.JPG' || typeExt === '.png' || typeExt === '.PNG') {
       callback(null, true)
     } else {
-      callback({error: 'Wrong type data extention!'}, false)
+      callback({error: 'Wrong type extention!'}, false)
     }
   }
 })

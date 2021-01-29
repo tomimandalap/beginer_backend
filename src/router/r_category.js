@@ -18,7 +18,7 @@ const {
 } = require('../helpers/middleware/auth')
 
 // redis
-const {getAllCategory} = require('../helpers/redis/redisAll')
+const {getAllCategory} = require('../helpers/redis/redis_category')
 
 route
   .post('/category', authentication, creatCategory) // access to admin and cashier 

@@ -20,6 +20,9 @@ const {
 // redis
 const redisClient = require('../config/redis/redis')
 
+// filesystem
+const fs = require('fs')
+
 module.exports = {
   // set redis
   setDataRedis: () => {
@@ -129,8 +132,6 @@ module.exports = {
     modelDetailProdcut(id)
     .then((response)=>{
       if (response.length > 0) {
-        // res.json(response)
-        module.exports.setDataRedis()
         success(res, 'Get detail product id: '+id+' success', {}, response)
       } else {
         notfound(res, "Oops, id not found!", [])
@@ -143,18 +144,37 @@ module.exports = {
   },
 
   // UPDATE
-  updateProduct: (req, res) => {
-    const id = req.params.id
-    const data = req.body
-    modelUpdateProduct(data, id)
-    .then((response)=>{
-      module.exports.setDataRedis()
-      success(res, 'Update data product success', {}, data)
-    })
-    .catch((error) => {
-      console.log(error.message)
+  updateProduct: async(req, res) => {
+    try {
+      const id = req.params.id
+      const callDetail = await modelDetailProdcut(id)
+      const data = req.body
+
+      const newData = {
+        category: data.category,
+        name: data.name,
+        image: req.file.filename,
+        price: data.price
+      }
+      // falidation data
+      if (!newData.category || !newData.name || !newData.image || !newData.price) {
+        badreques(res, 'Bad request', [])
+      } else {
+        modelUpdateProduct(newData, id)
+        .then((response)=>{
+          const locationPath = `./public/img/${callDetail[0].image}`
+          fs.unlinkSync(locationPath)
+          module.exports.setDataRedis()
+          success(res, 'Update data product success', {}, newData)
+        })
+        .catch((error) => {
+          console.log(error.message)
+          failed(res, 'Internal server error!', error.message)
+        })
+      }
+    } catch (error) {
       failed(res, 'Internal server error!', error.message)
-    })
+    }
   },
 
   patchProduct: (req, res) => {
@@ -172,16 +192,29 @@ module.exports = {
   },
 
   // Delete
-  deleteProduct: (req, res) => {
-    const id = req.params.id
-    modelDeleteProduct(id)
-    .then((response) => {
-      module.exports.setDataRedis()
-      success(res, 'Delete product success id: '+id+' success', {}, [])
-    })
-    .catch((error) => {
-      console.log(error.message)
+  deleteProduct: async(req, res) => {
+    try {
+      const id = req.params.id
+      const callDetail = await modelDetailProdcut(id)
+
+      modelDeleteProduct(id)
+      .then((response) => {
+        if (response.affectedRows) {
+          const locationPath = `./public/img/${callDetail[0].image}`
+          // console.log(locationPath)
+          fs.unlinkSync(locationPath)
+          module.exports.setDataRedis()
+          success(res, 'Delete product from id: '+id+' success', {}, [])
+        } else {
+          notfound(res,'Oops, id : ' + id + ' unavailable!', [])
+        }
+      })
+      .catch((error) => {
+        console.log(error.message)
+        failed(res, 'Internal server error!', error.message)
+      })
+    } catch (error) {
       failed(res, 'Internal server error!', error.message)
-    })
+    }
   }
 }

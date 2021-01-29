@@ -102,10 +102,7 @@ module.exports = {
     const category = req.params.category
     modelDetailCategory(category)
     .then((response) => {
-      // module.exports.setDataRedis()
-      // success(res, 'Get detail data category: '+category+' success', {}, response)
       if (response.length > 0) {
-        module.exports.setDataRedis()
         success(res, 'Get detail data category: '+category+' success', {}, response)
       } else {
         notfound(res, "Oops, data not found!", [])

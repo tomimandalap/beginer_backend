@@ -18,7 +18,7 @@ const {
 } = require('../helpers/middleware/auth')
 
 // redis
-const {getAllHistory} = require('../helpers/redis/redisAll')
+const {getAllHistory} = require('../helpers/redis/redis_history')
 
 route
   .post('/history', authentication, createHistory) // access to admin and cashier 
