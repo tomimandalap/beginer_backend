@@ -49,13 +49,14 @@ module.exports = {
   readHistory: async(req,res) => {
     try {
       // search
-      const invoices = req.query.invoices
-      const search = invoices ? `WHERE invoices LIKE '%${invoices}%'` : ``
+      const search = req.query.search ? req.query.search : 'invoices' 
+      const keyword = req.query.keyword ? req.query.keyword : ``
+      const searching = search ? `WHERE ${search.toString().toLowerCase()} LIKE '%${keyword.toString().toLowerCase()}%'` : ``
 
       // order && metode (ASC, DESC)
-      const order = req.query.order
+      const sort = req.query.sort ? req.query.sort : ``
       const metode = req.query.metode ? req.query.metode : 'asc'
-      const data = order ? `ORDER BY ${order} ${metode}` : ``
+      const sorting = sort ? `ORDER BY ${sort} ${metode.toString().toLowerCase()}` : ``
 
       // pagination
       const page = req.query.page ? req.query.page : 1
@@ -64,9 +65,9 @@ module.exports = {
       const pages = page ? `LIMIT ${start}, ${limit}` : ``
 
       // total page history
-      const totalPage = await modelReadTotalHistory(search)
+      const totalPage = await modelReadTotalHistory(searching)
 
-      modelReadHistory(search, data, pages)
+      modelReadHistory(searching, sorting, pages)
       .then((response) => {
         if(response.length > 0){
 

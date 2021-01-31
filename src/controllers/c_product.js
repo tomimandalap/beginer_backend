@@ -66,13 +66,14 @@ module.exports = {
   readAllProduct: async(req, res) => {
     try {
       // searcing name
-      const name = req.query.name 
-      const search = name ? `WHERE name LIKE '%${name}%'` : ``
+      const search = req.query.search ? req.query.search : 'name' 
+      const keyword = req.query.keyword ? req.query.keyword : ``
+      const searching = search ? `WHERE ${search.toString().toLowerCase()} LIKE '%${keyword.toString().toLowerCase()}%'` : ``
 
       // order && metode (ASC, DESC)
-      const order = req.query.order ? req.query.order : ``
+      const sort = req.query.sort ? req.query.sort : ``
       const metode = req.query.metode ? req.query.metode : 'asc'
-      const data = order ? `ORDER BY ${order} ${metode}` : ``
+      const sorting = sort ? `ORDER BY ${sort} ${metode.toString().toLowerCase()}` : ``
 
       // pagination
       const page = req.query.page ? req.query.page : 1
@@ -85,9 +86,9 @@ module.exports = {
       const category = code ? `LEFT JOIN tb_category ON tb_product.category = tb_category.category WHERE tb_product.category = '${code}'` : ``
       
       // total page
-      const totalPage = await modelReadTotalProduct(search)
+      const totalPage = await modelReadTotalProduct(searching)
 
-      modelReadProduct(search, data, pages, category)
+      modelReadProduct(searching, sorting, pages, category)
       .then((response) => {
         if ( response.length > 0) {
 

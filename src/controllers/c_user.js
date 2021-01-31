@@ -94,13 +94,14 @@ module.exports = {
   readAllUser: async(req, res) => {
     try {
       // searching name user
-      const name = req.query.name
-      const search = name ? `WHERE name LIKE '%${name}%'` : ``
+      const search = req.query.search ? req.query.search : 'name' 
+      const keyword = req.query.keyword ? req.query.keyword : ``
+      const searching = search ? `WHERE ${search.toString().toLowerCase()} LIKE '%${keyword.toString().toLowerCase()}%'` : ``
 
-      // sortby and metode ASC or DESC
-      const order = req.query.order ? req.query.order : ``
-      const metode = req.query.metode ? req.query.metode : `asc`
-      const sortby = order ? `ORDER BY ${order} ${metode}` : ``
+      // order && metode (ASC, DESC)
+      const sort = req.query.sort ? req.query.sort : ``
+      const metode = req.query.metode ? req.query.metode : 'asc'
+      const sorting = sort ? `ORDER BY ${sort} ${metode.toString().toLowerCase()}` : ``
 
       // pagination
       const page = req.query.page ? req.query.page : 1
@@ -109,9 +110,9 @@ module.exports = {
       const pages = page ? `LIMIT ${start}, ${limit}` : ``
 
       // total page tb user
-      const totalPage = await modelTotalUser(search)
+      const totalPage = await modelTotalUser(searching)
 
-      modelAllUser(search, sortby, pages)
+      modelAllUser(searching, sorting, pages)
       .then((response) => {
         if(response.length > 0) {
           const pagination = {

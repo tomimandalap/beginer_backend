@@ -74,13 +74,14 @@ module.exports = {
   readCart: async(req, res) => {
     try {
       // searcing name
-      const invoices = req.query.invoices 
-      const search = invoices ? `WHERE invoices LIKE '%${invoices}%'` : ``
+      const search = req.query.search ? req.query.search : 'invoices' 
+      const keyword = req.query.keyword ? req.query.keyword : ``
+      const searching = search ? `WHERE ${search.toString().toLowerCase()} LIKE '%${keyword.toString().toLowerCase()}%'` : ``
 
       // order && metode (ASC, DESC)
-      const order = req.query.order ? req.query.order : ``
+      const sort = req.query.sort ? req.query.sort : ``
       const metode = req.query.metode ? req.query.metode : 'asc'
-      const data = order ? `ORDER BY ${order} ${metode}` : ``
+      const sorting = sort ? `ORDER BY ${sort} ${metode.toString().toLowerCase()}` : ``
 
       // pagination
       const page = req.query.page ? req.query.page : 1
@@ -91,9 +92,9 @@ module.exports = {
       // const find = req.query.find
 
       // total page
-      const totalPage = await modelReadTotalCart(search)
+      const totalPage = await modelReadTotalCart(searching)
       
-      modelReadCart(search, data, pages)
+      modelReadCart(searching, sorting, pages)
       .then((response) => {
         if (response.length > 0) {
           const dataArr = []

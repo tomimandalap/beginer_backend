@@ -48,24 +48,25 @@ module.exports = {
   readAllCategory: async(req, res) => {
     try {
       // searching by category
-      const category = req.query.category
-      const search = category ? `WHERE category LIKE '%${category}%'` : ``
+      const search = req.query.search ? req.query.search : 'category'
+      const keyword = req.query.keyword ? req.query.keyword : ``
+      const searching = search ? `WHERE ${search.toString().toLowerCase()} LIKE '%${keyword.toString().toLowerCase()}%'` : ``
 
       // sort by category methode asc or desc
-      const order = req.query.order ? req.query.order : ``
+      const sort = req.query.sort ? req.query.sort : ``
       const metode = req.query.metode ? req.query.metode : 'asc'
-      const sorted = order ? `ORDER BY ${order} ${metode}` : ``
+      const sorted = sort ? `ORDER BY ${sort} ${metode.toString().toLowerCase()}` : ``
 
       // pagination table category
       const page = req.query.page ? req.query.page : 1
-      const limit = req.query.limit ? req.query.limit : 10
+      const limit = req.query.limit ? req.query.limit : 4
       const start = page === 1 ? 0 : (page-1)*limit
       const pages = page ? `LIMIT ${start}, ${limit}` : ``
 
       // count total row data 
-      const totalPage = await modelReadTotalCategory(search)
+      const totalPage = await modelReadTotalCategory(searching)
     
-      modelReadCategory(search, sorted, pages)
+      modelReadCategory(searching, sorted, pages)
       .then((response) => {
         if (response.length > 0) {
           const dataArr = []
