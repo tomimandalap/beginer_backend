@@ -11,7 +11,7 @@ const {
 } = require('../models/m_user')
 
 // response
-const {success, failed, notfound} = require('../helpers/response')
+const {success, badreques, failed, notfound} = require('../helpers/response')
 // jwt
 const jwt = require('jsonwebtoken')
 // env
@@ -35,23 +35,27 @@ module.exports = {
           } 
           // token
           const token = jwt.sign(dataUser, envJWTSECRET)
-          res.json({
-            message: "Login Success",
-            token
-          })
+          // res.json({
+          //   message: "Login Success",
+          //   token
+          // })
+          success(res, 'Login Success', {}, token)
         } else {
-          res.json({
-            message: "Login failed, password wrong!"
-          })
+          // res.json({
+          //   message: "Login failed, password wrong!"
+          // })
+          success(res, 'Login failed, password wrong!', {}, null)
         }
       } else {
-        res.json({
-          message: "Email not found!"
-        })
+        // res.json({
+        //   message: "Email not found!"
+        // })
+        success(res, 'Email not found!', {}, null)
       }
     })
     .catch((error) => {
       console.log(error.message)
+      failed(res, 'Internal server error!', error.message)
     })
   },
   // REGISTER
@@ -61,13 +65,16 @@ module.exports = {
     checkEmailUser(body.email)
     .then(async(response) => {
       if (response.length >= 1) {
-        res.json({
-          message: "Email registered!"
-        })
+        // res.json({
+        //   message: "Email registered!"
+        // })
+        success(res, 'Email registered!', {}, null)
       } else {
         // console.log(response)
         const salt = await bcrypt.genSalt(10)
         const pass = await bcrypt.hash(body.pass, salt)
+        // console.log(salt)
+        // console.log(pass)
         const user = {
           name: body.name,
           email: body.email,
@@ -82,7 +89,7 @@ module.exports = {
         })
         .catch((error) => {
           // res.json(error)
-          failed(res, 'Internal server error!', [])
+          failed(res, 'Internal server error!', error.message)
         })
       }
     })

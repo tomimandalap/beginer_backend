@@ -14,7 +14,7 @@ const multerStorage = multer.diskStorage({
 // setting conneting multer with storage
 const multerUploadImg = multer({
   storage: multerStorage,
-  limits: {fieldSize: 1*1000*1000}, //1byte*1000byte*1000byte = 1000.000 byte => 1000 Kb => 1 Mb
+  limits: {fieldSize: 1*1024*1204}, //1byte*1000byte*1000byte = 1000.000 byte => 1000 Kb => 1 Mb
   // custom extension
   fileFilter: (req, file, callback) => {
     const typeExt = path.extname(file.originalname)

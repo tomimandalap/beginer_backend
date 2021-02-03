@@ -6,7 +6,7 @@ module.exports = {
       pagination,
       data
     }
-    res.json(response)
+    res.status(200).json(response)
   },
   created: (res, message, data) => {
     const response = {
@@ -14,7 +14,7 @@ module.exports = {
       message,
       data
     }
-    res.json(response)
+    res.status(201).json(response)
   },
   badreques: (res, message, data) => {
     const response = {
@@ -22,7 +22,7 @@ module.exports = {
       message,
       data
     }
-    res.json(response)
+    res.status(400).json(response)
   },
   notfound: (res, message, data) => {
     const response = {
@@ -30,7 +30,7 @@ module.exports = {
       message,
       data
     }
-    res.json(response)
+    res.status(404).json(response)
   },
   failed: (res, message, data) => {
     const response = {
@@ -38,6 +38,6 @@ module.exports = {
       message,
       data
     }
-    res.json(response)
+    res.status(500).json(response)
   }
 }

@@ -45,6 +45,9 @@ app.use(routeCategory)
 app.use(routeCart)
 app.use(routeHistory)
 
+// Set for check file
+app.use('/image', express.static('./public/img'))
+
 // server
 app.listen( envPORT || 3000, cors(),  () => {
   console.log(`Server is running on http://localhost:${envPORT || 3000}`)

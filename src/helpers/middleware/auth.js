@@ -7,7 +7,7 @@ module.exports = {
     // console.log(headers)
     if(!headers.token){
       res.json({
-        message: "token required"
+        message: "token required" // token tidak ada
       })
     } else {
       // console.log(headers)

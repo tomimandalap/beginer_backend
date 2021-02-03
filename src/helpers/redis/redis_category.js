@@ -22,13 +22,13 @@ module.exports = {
           const start = page === 1 ? 0 : (page-1)*limit
           // filtering data
           const filtering = _.filter(data, (item) => {
-            return item[search].toString().toLowerCase().includes(keyword)
+            return item[search].toString().toLowerCase().includes(keyword.toString().toLowerCase())
           })
-          // sorting data
-          const sorting = _.orderBy(filtering, sort, metode)
           // logic cek data
           if (filtering.length>0) {
-            const paginationData = _.slice(sorting, start, start+limit)
+            // sorting data
+            const sorting = _.orderBy(filtering, sort, metode.toString().toLowerCase())
+            const paginationData = _.slice(sorting, start,start + Number(limit))
             const pagination = {
               page: page,
               limit: limit,
