@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const {envJWTSECRET} = require('../nv')
+const { expFailde } = require('../../helpers/response')
 
 module.exports = {
   authentication: (req, res, next) => {
@@ -33,9 +34,10 @@ module.exports = {
     if (access === 0) {
       next()
     } else {
-      res.json({
-        message: "Oops, access denied!, Only for admin!"
-      })
+      // res.json({
+      //   message: "Oops, access denied!, Only for admin!"
+      // })
+      expFailde(res, 'Oops, access denied!, Only for admin!', [])
     }
   },
   authorizationCashier: (req, res, next) => {
@@ -46,9 +48,10 @@ module.exports = {
     if (access === 1) {
       next()
     } else {
-      res.json({
-        message: "Oops, access denied!, Only for cashier!"
-      })
+      // res.json({
+      //   message: "Oops, access denied!, Only for cashier!"
+      // })
+      expFailde(res, 'Oops, access denied!, Only for cashier!', [])
     }
   }
 }

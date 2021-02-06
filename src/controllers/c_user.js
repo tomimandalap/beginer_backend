@@ -39,18 +39,23 @@ module.exports = {
           //   message: "Login Success",
           //   token
           // })
-          success(res, 'Login Success', {}, token)
+          const allData = {
+            name: response[0].name,
+            token,
+            access: response[0].access
+          }
+          success(res, 'Login Success', {}, allData)
         } else {
           // res.json({
           //   message: "Login failed, password wrong!"
           // })
-          success(res, 'Login failed, password wrong!', {}, null)
+          success(res, 'Login failed, password wrong!', {}, [])
         }
       } else {
         // res.json({
         //   message: "Email not found!"
         // })
-        success(res, 'Email not found!', {}, null)
+        success(res, 'Email not found!', {}, [])
       }
     })
     .catch((error) => {

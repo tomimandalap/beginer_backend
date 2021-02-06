@@ -25,7 +25,8 @@ const singleUploadimg = require('../helpers/middleware/uploadimg')
 
 route
   .post('/product',authentication, singleUploadimg, creatProduct) // access to admin and cashier
-  .get('/product',authentication, authorizationAdmin, getAllProduct, readAllProduct) // access to admin
+  // .get('/product',authentication, authorizationAdmin, getAllProduct, readAllProduct) // access to admin
+  .get('/product',authentication, getAllProduct, readAllProduct) // all access
   .get('/product/:id',authentication, authorizationCashier, detailProduct) // access to cashier
   .put('/product/:id',authentication, singleUploadimg, updateProduct) // access to admin and cashier
   .patch('/product/:id',authentication, patchProduct) // access to admin and cashier

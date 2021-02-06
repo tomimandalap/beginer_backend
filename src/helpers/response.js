@@ -39,5 +39,37 @@ module.exports = {
       data
     }
     res.status(500).json(response)
+  },
+  large: (res, message, data) => {
+    const response = {
+      code: 413,
+      message,
+      data
+    }
+    res.status(413).json(response)
+  },
+  notAcceptable: (res, message, data) => {
+    const response = {
+      code: 406,
+      message,
+      data
+    }
+    res.status(406).json(response)
+  },
+  notAllowed: (res, message, data) => {
+    const response = {
+      code: 405,
+      message,
+      data
+    }
+    res.status(405).json(response)
+  },
+  expFailde: (res, message, data) => {
+    const response = {
+      code: 417,
+      message,
+      data
+    }
+    res.status(417).json(response)
   }
 }

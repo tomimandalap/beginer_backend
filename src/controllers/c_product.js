@@ -35,12 +35,15 @@ module.exports = {
   },
   // Create POST data
   creatProduct: (req, res) => {
-    const data = req.body
+    const data = req.body 
     // res.json({
     //   status: true,
     //   multer: req.file.filename
     // })
-    if (data.category == '' || data.name == '' || data.image == '' || data.price == ''){
+    if (data.category == '' || data.name == '' || data.price == ''){
+      // console.log(req.file.filename)
+      const locationPath = `./public/img/${req.file.filename}`
+      fs.unlinkSync(locationPath)
       badreques(res, 'Bad request', [])
     } else {
       const newData = {
@@ -159,6 +162,8 @@ module.exports = {
       }
       // falidation data
       if (!newData.category || !newData.name || !newData.image || !newData.price) {
+        const locationPath = `./public/img/${req.file.filename}`
+        fs.unlinkSync(locationPath)
         badreques(res, 'Bad request', [])
       } else {
         modelUpdateProduct(newData, id)

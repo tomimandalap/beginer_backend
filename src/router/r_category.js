@@ -22,7 +22,8 @@ const {getAllCategory} = require('../helpers/redis/redis_category')
 
 route
   .post('/category', authentication, creatCategory) // access to admin and cashier 
-  .get('/category', authentication, authorizationAdmin, getAllCategory, readAllCategory) // access to admin
+  // .get('/category', authentication, authorizationAdmin, getAllCategory, readAllCategory) // access to admin
+  .get('/category', authentication, getAllCategory, readAllCategory) // all access
   .get('/category/:category', authentication, authorizationCashier, detailCategory) // access to cashier
   .put('/category/:category', authentication, updateCategory) // access to admin and cashier
   .patch('/category/:category', authentication, patchCategory) // access to admin and cashier

@@ -16,7 +16,7 @@ module.exports = {
           const sort = req.query.sort ? req.query.sort : ''
           const metode = req.query.metode ? req.query.metode : 'asc'
           // pagination
-          const limit = req.query.limit ? req.query.limit : 2
+          const limit = req.query.limit ? req.query.limit : 6
           const page = req.query.page ? req.query.page : 1
           const start = page===1 ? 0 : (page-1)*limit
           // filter data
