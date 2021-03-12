@@ -244,3 +244,6 @@ Project ini memiliki beberapa endpoint sebagai berikut:
 
 Lakukan hal yang sama dimasing-masing methode URL nya, untuk mempermudah silahkan impor file ```POSTMAN``` yang sudah kami sediakan. 
 Silahkan klik link berikut ini https://github.com/tomimandalap/beginer_backend/tree/ibackend/Data
+
+## Frontend
+Silahkan klik [disini](https://github.com/tomimandalap/lambancoffee)
